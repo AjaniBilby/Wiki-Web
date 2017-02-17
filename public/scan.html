@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Scanner</title>
+    <script>
+      function Get(url, callback){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+          if (this.readyState == 4){
+            callback(this);
+          }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send();
+
+        return xhttp;
+      }
+    </script>
+  </head>
+  <body>
+    <script>
+      Get('/wiki/'+location.search.substr(1), function(response){
+        var parser = new DOMParser();
+        var html = parser.parseFromString(response.responseText, "text/html");
+
+        var links = html/*.getElementById('bodyContent')*/.getElementsByTagName('a');
+        console.log(links);
+
+        for (let item of links){
+          if (item.href.indexOf('/wiki') === 0){
+            console.log('SUCEESS '+item.href);
+          }else{
+            console.log('fail '+item.href);
+          }
+        }
+
+        var output = {
+          lines: []
+        };
+
+        // var xhttp = new XMLHttpRequest();
+        // xhttp.open("POST", '/data/'+location.search.substr(1), true);
+        // xhttp.send(JSON.stringify(output));
+      });
+    </script>
+  </body>
+</html>
