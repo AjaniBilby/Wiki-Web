@@ -16,32 +16,65 @@
 
         return xhttp;
       }
+
+      function subLoader(dest, text) {
+        var p = new DOMParser();
+        var doc = p.parseFromString(text, 'text/html');
+
+        var images = doc.getElementsByTagName('img');
+        var i=0;
+        while (images.length>0){
+          doc.getElementsByTagName('img')[0].remove();
+          i++;
+        }
+
+        var f = document.createDocumentFragment();
+        while (doc.body.firstChild) {
+          f.appendChild(doc.body.firstChild);
+        }
+        [].map.call(f.querySelectorAll('script'), function(script) {
+          var scriptParent = script.parentElement || f;
+          var newScript = document.createElement('script');
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          scriptParent.replaceChild(newScript, script);
+         });
+         dest.appendChild(f);
+      }
     </script>
   </head>
   <body>
+    <div id="working"></div>
     <script>
       Get('/wiki/'+location.search.substr(1), function(response){
-        var parser = new DOMParser();
-        var html = parser.parseFromString(response.responseText, "text/html");
+        var working = document.getElementById('working');
+        subLoader(working, response.responseText);
 
-        var links = html/*.getElementById('bodyContent')*/.getElementsByTagName('a');
-        console.log(links);
-
-        for (let item of links){
-          if (item.href.indexOf('/wiki') === 0){
-            console.log('SUCEESS '+item.href);
-          }else{
-            console.log('fail '+item.href);
-          }
-        }
+        var links = document.getElementById('bodyContent').getElementsByTagName('a');
 
         var output = {
           lines: []
         };
 
-        // var xhttp = new XMLHttpRequest();
-        // xhttp.open("POST", '/data/'+location.search.substr(1), true);
-        // xhttp.send(JSON.stringify(output));
+        for (let item of links){
+          var path = item.href;
+
+          if (path.indexOf(location.origin) === 0){
+            path = path.substr( (location.origin).length );
+          }
+
+          if (path.indexOf('/wiki/') === 0 && output.lines.indexOf(path) == -1){
+            output.lines.push(path.replace('/wiki/', ''));
+          }
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", '/data/'+location.search.substr(1), true);
+        xhttp.setRequestHeader("Content-type", 'application/json');
+        xhttp.send(JSON.stringify(output));
       });
     </script>
   </body>
