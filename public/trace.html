@@ -32,7 +32,7 @@
 
                   response.responseText = response.responseText.replace('\r\n', '\n', 'g');
 
-                  var items = response.responseText.split('\r\n');
+                  var items = response.responseText.split('\n');
 
                   for (let item of items){
                     if (typeof(item) == "string" && item.length > 0 && loop.next.indexOf(item) == -1 && searched.indexOf(item) == -1){
@@ -49,7 +49,9 @@
                     searched.push(loop.search[i]);
                   }
                 }else{
-                  paths[loop.search[i]] = null;
+                  console.log('Failed to get', loop.search[i]);
+
+                  paths[loop.search[i]] = 'missing';
 
                   if (searched.indexOf(loop.search[i]) == -1){
                     searched.push(loop.search[i]);

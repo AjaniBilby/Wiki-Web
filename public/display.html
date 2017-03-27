@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Display</title>
+
+    <script src="./libraries/p5.js"></script>
+    <script src="./libraries/addons/p5.dom.min.js"></script>
+    <script src="./libraries/addons/p5.sound.js"></script>
+    <script src="./display/vector.js"></script>
+    <script src="./display/point.js"></script>
+    <script src="./display/startup.js"></script>
+  </head>
+  <body style="margin:0px; padding:0px; background-color: rgb(55,55,55);">
+
+    <script>
+      var trace = {
+        connections: {
+          cat: ['food', 'alive', 'hair', 'lives', 'eyes', 'furry'],
+          food: ['water', 'fish'],
+          eyes: ['fish'],
+          fish: ['food', 'alive'],
+          hair: ['furry'],
+          water: ['fish'],
+          alive: ['fish', 'cat'],
+        },
+        start: 'cat',
+        end: 'water'
+      };
+    </script>
+
+  </body>
+</html>

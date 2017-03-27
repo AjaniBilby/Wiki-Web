@@ -75,6 +75,10 @@
         xhttp.open("POST", '/data/'+location.search.substr(1), true);
         xhttp.setRequestHeader("Content-type", 'application/json');
         xhttp.send(JSON.stringify(output));
+
+        if (parent && finished){
+          finished(output);
+        }
       });
     </script>
   </body>
