@@ -13,7 +13,7 @@ var onlyDirectConnections = true;
 class Point extends Vector2{
   constructor(name = 'unknown', important = false){
     super(0, 0);
-    this.name = name;
+    this.name = name.replace(/_/g, ' ');
     this.important = important;
     this._ = {
       c: [],
@@ -222,8 +222,6 @@ function BuildPoints(trace){
     var col = [points[pointIds.indexOf(startPoint)]];
     var colIndex = 0;
 
-    var offset = 0;
-
     while (col.length > 0){
       var i=0;
       var next = [];
@@ -233,8 +231,8 @@ function BuildPoints(trace){
 
         var yPos = i-((col.length-1)/2);
 
-        item.x = (colIndex*120) + ((Math.random()*offset*2) - offset);
-        item.y = (yPos*150) + ((Math.random()*offset*2) - offset);
+        item.x = (colIndex*500) + ((Math.random()*300*2) - 150);
+        item.y = (yPos*70) + ((Math.random()*25*2) - 25);
 
         //Update image constraints
         if (item.x > largest.x){
@@ -267,7 +265,7 @@ function BuildPoints(trace){
     }
     var endIndex = pointIds.indexOf(trace.end);
     if (endIndex != -1){
-      points[endIndex].x = (colIndex+1)*100;
+      points[endIndex].x = (colIndex)*500;
       points[endIndex].y = 0;
 
       largest.x = points[endIndex].x;

@@ -2,166 +2,51 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Wiki Scimmer</title>
+    <title>Display</title>
     <style>
       body{
         margin: 0px;
-        padding: 0px;
-      }
-
-      #display{
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-
-        width: 100vw;
-        height: 100vh;
+        margin-bottom:20px;
       }
 
       #menu{
         position: fixed;
-        height: 20px;
         bottom: 0px;
-        right: 0px;
         left: 0px;
 
-        margin: 0px;
+        height: 20px;
+        width: 100vw;
 
+        overflow: hidden;
         background-color: white;
       }
     </style>
+
+    <script src="trace.js"></script>
+    <script src="./libraries/p5.js"></script>
+    <script src="./libraries/addons/p5.dom.min.js"></script>
+    <script src="./libraries/addons/p5.sound.js"></script>
+    <script src="./display/vector.js"></script>
+    <script src="./display/point.js"></script>
+    <script src="./display/startup.js"></script>
     <script>
-      var scanner;
-
-      function Scan(id){
-        return new Promise(function(resolve, reject) {
-          scanner = document.createElement('iframe');
-          scanner.src = "/scan?"+id;
-          scanner.style.display = "none";
-
-          scanner.onload = function(){
-            scanner.contentWindow.finished = function(data){
-              resolve(data);
-            };
-          };
-          scanner.onerror = function(err){
-            console.log('scanner failed', err);
-            reject(err);
-          };
-
-          document.body.appendChild(scanner);
-        });
-      }
-
       function Generate(start, end){
-        let trace = function(){
-          Trace(start, end)
-            .then(function(result){
-              var parse = {
-                start: start,
-                connections: result,
-                end: end
-              };
-
-              for (let key in parse.connections){
-                if (parse.connections[key] === null){
-                  delete parse.connections[key];
-                }
-              }
-
-              traceEnd(parse);
-            })
-            .catch(function(result){
-              var parse = {
-                start: start,
-                connections: result,
-                end: null
-              };
-
-              for (let key in parse.connections){
-                if (parse.connections[key] === null){
-                  delete parse.connections[key];
-                }
-              }
-
-              traceEnd(parse);
-            });
-        };
         let traceEnd = function(result){
-          result.all = [];
-          if (result.connections){
-            result.path = trace.connections;
+          if(result && result.all && result.all.length>0){
+            BuildPoints(result);
           }
-          for (let key in result.connections){
-            if (result.all.indexOf(key) == -1){
-              result.all.push(key);
-            }
-
-            for (let item of result.connections[key]){
-              if (result.all.indexOf(item) == -1){
-                result.all.push(item);
-              }
-            }
-          }
-
-          display.BuildPoints(result);
-
-
-          //List missing data
-          var missing = [];
-          var missingProgress = 0;
-          for (let key in result.path){
-            console.log(key, result.path[key]);
-
-            if (result.path[key] == "missing"){
-              missing.push(key);
-            }
-          }
-
-          var loop = function(){
-            if (missingProgress >= missing.length){
-              Generate(start, end);
-            }
-            console.log('gathering '+missingProgress+' of '+missing.length+'('+missing[missingProgress]+')');
-
-            Scan(missing[missingProgress])
-              .then(function(){
-                missingProgress+=1;
-                loop();
-              })
-              .catch(function(){
-                missingProgress+=1;
-                loop();
-              });
-          };
-
-          loop();
-          console.log(missing, result.path);
         };
+        let traceTick = function(){}
 
-        trace();
+        Trace(start, end, traceEnd, traceEnd);
       }
     </script>
   </head>
-  <body>
-    <iframe id="display" src="/display"></iframe>
-    <iframe id="tracer" style="display:none;" src="/trace"></iframe>
-    <script>
-      var Trace = null;
-      var display = null;
+  <body style="margin:0px; padding:0px; background-color: rgb(55,55,55);">
 
-      document.getElementById('tracer').onload = function(){
-        Trace = document.getElementById('tracer').contentWindow.Trace;
-      };
-      document.getElementById('display').onload = function(){
-        display = document.getElementById('display').contentWindow;
-      };
-    </script>
     <div id="menu">
-      <input id="start" value="demo1">
-      <input id="end" value="demo14">
+      <input id="start" value="cat">
+      <input id="end" value="dog">
       <button id="gen-btn">Generate</button>
     </div>
 

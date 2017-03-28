@@ -6,23 +6,24 @@ var prevMousePos = {
 function setup(){
   createCanvas(500, 500);
   pixelDensity(1);
-
-  BuildPoints(trace);
 }
 
 function draw(){
   background(55);
 
   push();
-
   translate(
     100,
     canvas.height/2+50
   );
-
-  //ellipse(0,0, 10, 10);
   DrawPoints();
 
+  stroke(55);
+  strokeWeight(3);
+  textAlign('left', 'top');
+  textSize(24);
+  fill(255);
+  text('Connections '+points.length, -90, -(canvas.height/2+40));
 
   pop();
 
