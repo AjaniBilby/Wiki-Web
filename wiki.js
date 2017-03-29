@@ -9,6 +9,11 @@ function Scan(string){
   while (string.indexOf('<ref') != -1){
     var start = string.indexOf('<ref');
     var end = string.indexOf('</ref>');
+
+    if (start == -1 || end == -1){
+      break;
+    }
+
     string = string.slice(0, start) + string.slice(end+6);
   }
 
@@ -43,15 +48,7 @@ module.exports = function(term, callback){
       next = next.slice(11, -2);
       module.exports(next, callback);
     }else{
-      var value = '';
-      try {
-        value = Scan(body);
-      } catch (e) {
-        console.log(term, 'FAILURE!!!!!', body.length);
-        callback([]);
-      } finally {
-        callback(value);
-      }
+      callback(Scan(body));
     }
   });
 };
