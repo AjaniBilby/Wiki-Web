@@ -13,7 +13,7 @@ if (!Get){
   };
 }
 
-var traceStreams = 10;
+var traceStreams = 15;
 
 function Trace(start, end, callback){
   start = start.toLowerCase();
@@ -75,7 +75,7 @@ function Trace(start, end, callback){
       for (let i=0; i<num; i++){
         loop();
       }
-    }else if (!ended){
+    }else if (found && threads <= 0){
       console.log('FOUND '+end);
 
       callback(result);

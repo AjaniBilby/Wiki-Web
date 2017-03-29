@@ -21,9 +21,10 @@ function draw(){
   stroke(55);
   strokeWeight(3);
   textAlign('left', 'top');
-  textSize(24);
+  textSize(18);
   fill(255);
   text('Connections '+points.length, -90, -(canvas.height/2+40));
+  text('Seperation '+seperation, -90, -(canvas.height/2+10));
 
   pop();
 

@@ -1,14 +1,24 @@
 var points = [];
 var startPoint = null;
 var pointIds = [];
+var seperation = 0;
 var largest = {
   x: 0,
   y: 0
 };
 var colors = [
-  '#e21400', '#91580f', '#f8a700', '#f78b00',
-  '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-  '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
+  '#e21400', //Red
+  '#91580f',
+  '#f8a700',
+  '#f78b00',
+  '#58dc00',
+  '#287b00',
+  '#a8f07a',
+  '#4ae8c4',
+  '#3b88eb',
+  '#3824aa',
+  '#a700ff',
+  '#d300e7'
 ];
 
 var onlyDirectConnections = true;
@@ -119,7 +129,7 @@ class Point extends Vector2{
 
 function BuildPoints(trace){
   points = [];
-  var goals = {
+  var goal = {
     start: undefined,
     end: undefined
   };
@@ -155,10 +165,10 @@ function BuildPoints(trace){
         item
       );
       if (item == trace.start){
-        goals.start = points[points.length-1];
+        goal.start = points[points.length-1];
       }
       if (item == trace.end){
-        goals.end = points[points.length-1];
+        goal.end = points[points.length-1];
       }
     }
 
@@ -190,13 +200,13 @@ function BuildPoints(trace){
       return;
     }
 
-    var hitStart = false;
-    var checked = [];
+    var checked = [trace.start]; //Makes sure that it doesn't go through start
     var stack = [
       points[pointIds.indexOf(trace.end)]
     ];
+    var i=1;
 
-    while (stack.length > 0 && !hitStart){
+    while (stack.length > 0){
       var next = [];
       for (let item of stack){
         if (checked.indexOf(item.name) != -1){
@@ -204,22 +214,24 @@ function BuildPoints(trace){
         }
 
         checked.push(item.name);
-        if (item.name == trace.start){
-          hitStart = true;
-          break;
-        }
         for (let connected of item._.b){
           if (checked.indexOf(connected.name) == -1){
             next.push(connected);
+
+            if (connected.name == trace.start){
+              trace.shortestPath = i;
+            }
           }
         }
       }
 
       stack = next;
+      i++;
     }
 
     for (let i=0; i<points.length; i++){
-      if (checked.indexOf(points[i].name) == -1){
+      //If the item was not hit during the back track, or the point has no connections
+      if (checked.indexOf(points[i].name) == -1 || (points[i]._.c.length <= 0 && points[i]._.b.length <= 0)){
         points[i].destroy();
 
         /*The current index has been removed so we need to recheck
@@ -227,6 +239,8 @@ function BuildPoints(trace){
         i -=1;
       }
     }
+
+    seperation = trace.shortestPath;
   })();
 
   //Setup point's locations
@@ -249,8 +263,6 @@ function BuildPoints(trace){
 
         var yPos = i-((col.length-1)/2);
 
-        console.log('MAPPED', item.name);
-
         item.x = (colIndex*500) + ((Math.random()*250*2) - 250);
         item.y = (yPos*100) + ((Math.random()*40*2) - 40);
         item.color = colors[colorId];
@@ -265,31 +277,55 @@ function BuildPoints(trace){
 
         //Setup for next colume
         for (let connected of item._.c){
-          if (
-            drawn.indexOf(connected.name) == -1 && next.indexOf(connected) == -1 &&
-            col.indexOf(connected) == -1
-          ){
+          if (drawn.indexOf(connected.name) == -1 && next.indexOf(connected) == -1 && col.indexOf(connected) == -1){
             next.push(connected);
           }
         }
         i++;
       }
 
-      col = next;
+
+
+      //Sort and setup for next loop
+      var beginning = true;
       colIndex++;
+      col = [];
+      next = next.sort(function(a,b){
+        if (a._.c.length > b._.c.length){
+          return -1;
+        }else if (a._.c.length < b._.c.length){
+          return 1;
+        }else{
+          return 0;
+        }
+      });
+
+      if (next[0] && next[1]){
+        console.log('PROBE:', next[0]._.c.length, next[1]._.c.length);
+      }
+
+      while (next.length > 0){
+        if (beginning){
+          col.unshift(next[0]);
+        }else{
+          col.push(next[0]);
+        }
+        beginning = !beginning;
+        next.splice(0,1);
+      }
     }
 
-    if (goals.start){
-      goals.start.x = 0;
-      goals.start.y = 0;
-      goals.start.color = colors[0];
+    if (goal.start){
+      goal.start.x = 0;
+      goal.start.y = 0;
+      goal.start.color = colors[0];
     }
-    if (goals.end){
-      goals.end.x = colIndex*500;
-      goals.end.y = 0;
-      goals.end.color = colors[0];
+    if (goal.end){
+      goal.end.x = colIndex*500;
+      goal.end.y = 0;
+      goal.end.color = colors[0];
 
-      largest.x = goals.end.x;
+      largest.x = goal.end.x;
     }
   })();
 
