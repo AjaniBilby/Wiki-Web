@@ -8,17 +8,17 @@ var largest = {
 };
 var colors = [
   '#e21400', //Red
-  '#91580f',
-  '#f8a700',
-  '#f78b00',
-  '#58dc00',
-  '#287b00',
-  '#a8f07a',
-  '#4ae8c4',
-  '#3b88eb',
-  '#3824aa',
-  '#a700ff',
-  '#d300e7'
+  '#d300e7', //Violet
+  '#8c4f00', //Chocolate Brown
+  '#3824aa', //Deep Purple
+  '#4ae8c4', //Cyan
+  '#00b322', //Deep Green
+  '#f8a700', //Orangy Brown
+  '#bb0e3d', //Rose
+  '#3b88eb', //Cool Blue
+  '#58dc00', //Vibrant Green
+  '#f78b00', //Orange
+  '#a700ff', //Purple
 ];
 
 var onlyDirectConnections = true;
@@ -217,10 +217,8 @@ function BuildPoints(trace){
         for (let connected of item._.b){
           if (checked.indexOf(connected.name) == -1){
             next.push(connected);
-
-            if (connected.name == trace.start){
-              trace.shortestPath = i;
-            }
+          }else if (connected.name == trace.start && trace.shortestPath === undefined){
+            trace.shortestPath = i;
           }
         }
       }
