@@ -297,11 +297,6 @@ function BuildPoints(trace){
           return 0;
         }
       });
-
-      if (next[0] && next[1]){
-        console.log('PROBE:', next[0]._.c.length, next[1]._.c.length);
-      }
-
       while (next.length > 0){
         if (beginning){
           col.unshift(next[0]);
@@ -327,7 +322,7 @@ function BuildPoints(trace){
     }
   })();
 
-  resizeCanvas(largest.x + 150, largest.y * 2 + 250);
+  resizeCanvas(largest.x + 250, largest.y * 2 + 250);
 
   draw();
 }

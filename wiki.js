@@ -1,9 +1,10 @@
 var request = require('request');
+var maxStringLength = 134217727;
 
 function Scan(string){
   //Remove headers, and convert to a standard \n format
   string = string.replace(/\r\n/g, '\n');
-  string = string.substr(string.indexOf('\n\n'));
+  string = string.substr(string.indexOf('\n\n')).toLowerCase();
 
   //Remove references
   while (string.indexOf('<ref') != -1){
@@ -13,8 +14,13 @@ function Scan(string){
     if (start == -1 || end == -1){
       break;
     }
+    var a = string.slice(0, start);
+    var b = string.slice(end+6);
+    if (a.length+b.length >= maxStringLength){
+      break;
+    }
 
-    string = string.slice(0, start) + string.slice(end+6);
+    string =  a+b ;
   }
 
   //Pull all links from the page
@@ -29,8 +35,9 @@ function Scan(string){
     }
 
     let link = (part[1] || part[0]).replace(/ /g, '_');
-
-    links.push(link.toLowerCase());
+    if (links.indexOf(link) == -1 && link.indexOf('>') == -1 && link.indexOf('<') == -1){
+      links.push(link.toLowerCase());
+    }
   }
 
   return links;

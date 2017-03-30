@@ -11,8 +11,9 @@ passer.listen(8080);
 
 passer.get('/data/*', function(req, res){
   let path = req.url.substr(6).toLowerCase();
+  let validFilePath = path.indexOf('/') == -1 && path.indexOf('\\') == -1;
 
-  if (fs.existsSync('./data/'+path+'.dat')){
+  if (validFilePath && fs.existsSync('./data/'+path+'.dat')){
     res.end(fs.readFileSync('./data/'+path+'.dat'));
     return;
   }
@@ -26,6 +27,8 @@ passer.get('/data/*', function(req, res){
     }
     res.end(result);
 
-    fs.writeFileSync('./data/'+path+'.dat', result);
+    if (validFilePath){
+      fs.writeFileSync('./data/'+path+'.dat', result);
+    }
   });
 });

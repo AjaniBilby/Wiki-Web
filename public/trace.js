@@ -75,7 +75,7 @@ function Trace(start, end, callback){
       for (let i=0; i<num; i++){
         loop();
       }
-    }else if (found && threads <= 0){
+    }else if (found && threads <= 0/* && !ended*/){
       console.log('FOUND '+end);
 
       callback(result);
