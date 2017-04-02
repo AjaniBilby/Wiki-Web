@@ -6,7 +6,7 @@ function Scan(string, term){
   string = string.replace(/\r\n/g, '\n');
   string = string.substr(string.indexOf('\n\n')).toLowerCase();
 
-  var broken = false;
+  var broken = null;
 
   //Remove references
   while (string.indexOf('<ref') != -1){
@@ -14,15 +14,13 @@ function Scan(string, term){
     var end = string.indexOf('</ref>');
 
     if (start == -1 || end == -1){
-      console.error('Reference tags miss match ('+term+')');
-      broken = true;
+      broken = 1;
       break;
     }
     var a = string.slice(0, start);
     var b = string.slice(end+6);
     if (a.length+b.length >= maxStringLength){
-      console.error('String Length Fail ('+term+')');
-      broken = true;
+      broken = 2;
       break;
     }
 
@@ -46,8 +44,10 @@ function Scan(string, term){
     }
   }
 
-  if (broken){
-    console.log(links.length);
+  if (broken == 1){
+    console.error('Reference tags miss match ('+term+') ' + links.length);
+  }else if (broken == 2){
+    console.error('String Length Fail ('+term+') ' + links.length);
   }
 
   return links;
