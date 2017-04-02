@@ -138,6 +138,9 @@ function BuildPoints(trace){
   largest.x = 0;
   largest.y = 0;
 
+  //Make title
+  title = (trace.start[0].toUpperCase()+trace.start.slice(1)) + ' - ' + (trace.end[0].toUpperCase()+trace.end.slice(1));
+
   //Make list of all points
   (function(){
     //Get all node points

@@ -1,10 +1,12 @@
 var request = require('request');
 var maxStringLength = 134217727;
 
-function Scan(string){
+function Scan(string, term){
   //Remove headers, and convert to a standard \n format
   string = string.replace(/\r\n/g, '\n');
   string = string.substr(string.indexOf('\n\n')).toLowerCase();
+
+  var broken = false;
 
   //Remove references
   while (string.indexOf('<ref') != -1){
@@ -12,11 +14,15 @@ function Scan(string){
     var end = string.indexOf('</ref>');
 
     if (start == -1 || end == -1){
+      console.error('Reference tags miss match ('+term+')');
+      broken = true;
       break;
     }
     var a = string.slice(0, start);
     var b = string.slice(end+6);
     if (a.length+b.length >= maxStringLength){
+      console.error('String Length Fail ('+term+')');
+      broken = true;
       break;
     }
 
@@ -40,6 +46,10 @@ function Scan(string){
     }
   }
 
+  if (broken){
+    console.log(links.length);
+  }
+
   return links;
 }
 
@@ -55,7 +65,7 @@ module.exports = function(term, callback){
       next = next.slice(11, -2);
       module.exports(next, callback);
     }else{
-      callback(Scan(body));
+      callback(Scan(body, term));
     }
   });
 };
