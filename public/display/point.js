@@ -139,7 +139,7 @@ function BuildPoints(trace){
   largest.y = 0;
 
   //Make title
-  title = (trace.start[0].toUpperCase()+trace.start.slice(1)) + ' - ' + (trace.end[0].toUpperCase()+trace.end.slice(1));
+  title = "Degrees of Seperation Between "+ (trace.start[0].toUpperCase()+trace.start.slice(1)) + ' & ' + (trace.end[0].toUpperCase()+trace.end.slice(1));
 
   //Make list of all points
   (function(){
@@ -325,7 +325,7 @@ function BuildPoints(trace){
     }
   })();
 
-  resizeCanvas(largest.x + 250, largest.y * 2 + 250);
+  resizeCanvas(largest.x + 250, Math.max(largest.y * 2 + 200, window.innerHeight-45));
 
   draw();
 }

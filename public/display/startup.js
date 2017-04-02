@@ -24,19 +24,29 @@ function draw(){
   );
   DrawPoints();
 
-  stroke(55);
-  strokeWeight(3);
-  textAlign('left', 'top');
-  fill(255);
+  noStroke();
+  textAlign('center', 'top');
+  fill(0,38,150);
 
   //Path title
   textSize(28);
   text(title, canvas.width/2, -(canvas.height/2-10));
 
   //Path Description
+  stroke(255);
+  fill(10,120,249);
+  strokeWeight(2);
+  rect(
+    -100, (canvas.height/2-70),
+    300, (canvas.height/2)
+  );
+
+  noStroke();
   textSize(18);
-  text('Connections '+points.length, -90, (canvas.height/2-60));
-  text('Seperation '+seperation, -90, (canvas.height/2-30));
+  fill(255);
+  textAlign('left', 'top');
+  text('Connections: '+(points.length-2), -90, (canvas.height/2-60));
+  text('Degrees of Seperation: '+seperation, -90, (canvas.height/2-30));
 
   pop();
 

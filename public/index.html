@@ -71,8 +71,8 @@
 
     <script>
       document.getElementById('menu').onsubmit = function(){
-        var start = document.getElementById('start').value;
-        var end = document.getElementById('end').value;
+        var start = document.getElementById('start').value.toLowerCase();
+        var end = document.getElementById('end').value.toLowerCase();
 
         Generate(start.replace(' ', '_'), end.replace(' ', '_'));
 

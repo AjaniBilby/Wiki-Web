@@ -29,6 +29,7 @@ var module = {
       this.e = document.createElement('div');
       this.e.style.display = "block";
       this.e.style.padding = "5px 0px 0px 0px";
+      this.e.style['background-color'] = "rgba(255,255,255,.5)";
       this.e.innerHTML = this.s;
       element.appendChild(this.e);
     }
