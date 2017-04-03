@@ -1,68 +1,17 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const dialog = electron.dialog;
 const globalShortcut = electron.globalShortcut;
+const ipc = require('electron').ipcMain;
 var fs = require("fs");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-var zoom = 5;
-
-var template = [
-  {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Reload',
-        accelerator: 'CmdOrCtrl+R',
-        click: function (item, focusedWindow) {
-          if (focusedWindow) {
-            // on reload, start fresh and close any old
-            // open secondary windows
-            mainWindow.reload();
-          }
-        }
-      },
-      {
-        label: 'Toggle Full Screen',
-        accelerator: (function () {
-          if (process.platform === 'darwin') {
-            return 'Ctrl+Command+F';
-          } else {
-            return 'F11';
-          }
-        })(),
-        click: function (item, focusedWindow) {
-          if (focusedWindow) {
-            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-          }
-        }
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: (function () {
-          if (process.platform === 'darwin') {
-            return 'Alt+Command+I';
-          } else {
-            return 'Ctrl+Shift+I';
-          }
-        })(),
-        click: function (item, focusedWindow) {
-          if (focusedWindow) {
-            focusedWindow.toggleDevTools();
-          }
-        }
-      }
-    ]
-  }
-];
-
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600, frame: true, webPreferences: {zoomFactor: zoom}});
+  mainWindow = new BrowserWindow({width: 800, height: 600, frame: true});
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/project/index.html`);
@@ -70,14 +19,11 @@ function createWindow () {
   mainWindow.setMenu(null);
   mainWindow.on('closed', function () {
     mainWindow = null;
-
     if (process.platform !== 'darwin') {
       app.quit();
     }
-
     process.exit();
   });
-  mainWindow.setFullScreen(false);
 }
 
 app.on('ready', function(){
@@ -93,15 +39,6 @@ app.on('ready', function(){
   });
   globalShortcut.register("F11", function(){
     mainWindow.setFullScreen(!mainWindow.isFullScreen());
-  });
-
-  globalShortcut.register('=', function(){
-    zoom += 1;
-    //mainWindow.webPreferences.zoomFactor = 2;
-  });
-  globalShortcut.register('-', function(){
-    zoom -=1;
-    //mainWindow.zoomout(zoom);
   });
 });
 

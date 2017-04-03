@@ -48,16 +48,74 @@
     <script src="./display/point.js"></script>
     <script src="./display/startup.js"></script>
     <script>
+
+      function Save(){
+        var url = canvas.toDataURL('image/png');
+
+        var a = document.createElement("a");
+        a.href = url;
+        a.type = 'image/png';
+        a.download = title.replace(/ /g, '_')+'.png';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        });
+      }
+
       function Generate(start, end){
         let traceEnd = function(result){
           if(result && result.all && result.all.length>0){
             BuildPoints(result);
           }
         };
-        let traceTick = function(){}
+        let traceTick = function(){};
 
         Trace(start, end, traceEnd, traceEnd);
       }
+
+      var zoom = 1;
+      var zoomScale = 0.1;
+      var ctrlDown = false;
+
+      window.addEventListener('keyup', function(evt){
+        console.log(evt);
+        if (evt.keyCode == 17){
+          ctrlDown = false;
+        }
+      });
+      window.addEventListener("keydown", function(evt){
+        switch (evt.keyCode) {
+          case 17: //ctrl
+            ctrlDown = true;
+            break;
+          case 83: //s
+            if (ctrlDown){
+              Save();
+            }
+            break;
+          case 187: //+ =
+            zoom += zoomScale;
+            if (zoom > -1 && zoom < 0){
+              zoom = 1 + zoomScale;
+            }
+            break;
+          case 189: //- _
+            zoom -= zoomScale;
+            if (zoom < 1 && zoom > 0){
+              zoom = 0 - zoomScale;
+            }
+            break;
+        }
+
+        var percent = zoom;
+        if (zoom < 0){
+          percent = 1/(Math.abs(zoom)+1);
+        }
+
+        document.body.getElementsByTagName('canvas')[0].style.zoom = percent;
+      });
     </script>
   </head>
   <body>

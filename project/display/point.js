@@ -140,6 +140,7 @@ function BuildPoints(trace){
   var startPoint = trace.start;
   largest.x = 0;
   largest.y = 0;
+  largest.ny = 0;
 
   //Make title
   title = "Degrees of Seperation Between "+ (trace.start[0].toUpperCase()+trace.start.slice(1)) + ' & ' + (trace.end[0].toUpperCase()+trace.end.slice(1));
@@ -278,6 +279,9 @@ function BuildPoints(trace){
         if (item.y > largest.y){
           largest.y = item.y*2;
         }
+        if (item.y < largest.ny){
+          largest.ny = item.y;
+        }
 
         //Setup for next colume
         for (let connected of item._.c){
@@ -328,7 +332,13 @@ function BuildPoints(trace){
     }
   })();
 
-  resizeCanvas(largest.x + 250, Math.max(largest.y * 2 + 200, window.innerHeight-45));
+  resizeCanvas(
+    largest.x + 250,
+    Math.max(
+      largest.y + Math.abs(largest.ny) + 100,
+      window.innerHeight-45
+    )
+  );
 
   draw();
 }
