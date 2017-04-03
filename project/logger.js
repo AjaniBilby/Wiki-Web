@@ -7,10 +7,11 @@ var module = {
   var element = document.createElement('div');
   element.style.position = 'fixed';
   element.style.top = '0px';
-  element.style.bottom = '30px';
+  element.style.bottom = '40px';
   element.style.right = '0px';
   element.style.width = '300px';
   element.style['padding-top'] = '10px';
+  element.style.overflow = "hidden";
   element.style['font-family'] = "Calibre, Liberation Sans, Arial";
 
 

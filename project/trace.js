@@ -1,25 +1,30 @@
 var wiki = require('./wiki.js');
 var fs = require('fs');
+
 var traceStreams = 10;
+var cache = true;
 
 //Get wikipedia pages
 var Get = function(path, callback){
   let validFilePath = path.indexOf('/') == -1 && path.indexOf('\\') == -1 && path.indexOf('*') == -1;
 
   if (validFilePath && fs.existsSync('./data/'+path+'.dat')){
-    var result = fs.readFileSync('./data/'+path+'.dat', 'utf8');
-    if (result !== null){
-      result = result.split('\n');
-    }
-    callback(result);
+    fs.readFile('./data/'+path+'.dat', function(err, result){
+      result = result.toString();
+
+      if (result !== null){
+        result = result.split('\n');
+      }
+      callback(result);
+    });
     return;
   }
 
   wiki(path, function(links){
     callback(links);
 
-    if (validFilePath && links.length >= 1){
-      fs.writeFileSync('./data/'+path+'.dat', links.join('\n'));
+    if (cache && validFilePath && links.length >= 1){
+      fs.writeFile('./data/'+path+'.dat', links.join('\n') || '', function(error){});
     }
   });
 };

@@ -53,6 +53,10 @@ function Scan(string, term){
 }
 
 module.exports = function(term, callback){
+  if (term.indexOf('[') != -1){
+    term = term.slice(1);
+  }
+
   var req = new XMLHttpRequest();
   req.onreadystatechange = function(){
     if (this.readyState !== 4){
