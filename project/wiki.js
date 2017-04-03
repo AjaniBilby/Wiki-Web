@@ -1,4 +1,3 @@
-var request = require('request');
 var maxStringLength = 134217727;
 
 function Scan(string, term){
@@ -54,18 +53,21 @@ function Scan(string, term){
 }
 
 module.exports = function(term, callback){
-  request('http://en.wikipedia.org/wiki/'+term+'?action=raw', function(error, response, body){
-    if (error){
-      callback([]);
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function(){
+    if (this.readyState !== 4){
       return;
     }
 
-    if (body.indexOf('#REDIRECT') === 0){
+    var body = this.responseText || '';
+    if (this.status == 200 && body.indexOf('#REDIRECT') === 0){
       var next = body.replace(/\r\n/g, '\n').split('\n')[0];
       next = next.slice(11, -2);
       module.exports(next, callback);
     }else{
       callback(Scan(body, term));
     }
-  });
+  };
+  req.open('GET', 'https://en.wikipedia.org/wiki/'+term+'?action=raw', true);
+  req.send();
 };

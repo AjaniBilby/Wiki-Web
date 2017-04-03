@@ -26,8 +26,11 @@ var onlyDirectConnections = true;
 
 
 class Point extends Vector2{
-  constructor(name = 'unknown', important = false){
+  constructor(name, important = false){
     super(0, 0);
+    if (typeof(name) != "string"){
+      name = "unknown";
+    }
     this.name = name.replace(/_/g, ' ');
     this.color = colors[0];
     this._ = {

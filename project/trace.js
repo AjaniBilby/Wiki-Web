@@ -1,19 +1,28 @@
-if (!Get){
-  var Get = function(url, callback){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function(){
-      if (this.readyState == 4){
-        callback(this);
-      }
-    };
-    xhttp.open("GET", url, true);
-    xhttp.send();
+var wiki = require('./wiki.js');
+var fs = require('fs');
+var traceStreams = 10;
 
-    return xhttp;
-  };
-}
+//Get wikipedia pages
+var Get = function(path, callback){
+  let validFilePath = path.indexOf('/') == -1 && path.indexOf('\\') == -1 && path.indexOf('*') == -1;
 
-var traceStreams = 15;
+  if (validFilePath && fs.existsSync('./data/'+path+'.dat')){
+    var result = fs.readFileSync('./data/'+path+'.dat', 'utf8');
+    if (result !== null){
+      result = result.split('\n');
+    }
+    callback(result);
+    return;
+  }
+
+  wiki(path, function(links){
+    callback(links);
+
+    if (validFilePath && links.length >= 1){
+      fs.writeFileSync('./data/'+path+'.dat', links.join('\n'));
+    }
+  });
+};
 
 function Trace(start, end, callback){
   start = start.toLowerCase();
@@ -31,22 +40,21 @@ function Trace(start, end, callback){
     var term = search[0];
     search.splice(0, 1); //Remove the searching item
 
-    Get('/data/'+term, function(response){
-      if (response.status == 200){
-        var body = response.responseText.replace(/\r\n/g, '\n').split('\n');
+    Get(term, function(links){
+      if (links !== null){
 
         if (!connections[term]){
           connections[term] = [];
         }
-        connections[term] = connections[term].concat(body);
-        all = all.concat(body);
+        connections[term] = connections[term].concat(links);
+        all = all.concat(links);
 
         //If the end is in the results, and don't change found it false
-        found = body.indexOf(end) != -1 || found;
+        found = links.indexOf(end) != -1 || found;
 
         //Push new links for the next set
         if (found !== true){
-          next = next.concat(body);
+          next = next.concat(links);
         }
       }
 
@@ -88,4 +96,10 @@ function Trace(start, end, callback){
   };
 
   attemptEnd();
+}
+
+
+
+if (!fs.existsSync('./data/')){
+  fs.mkdirSync('./data/');
 }

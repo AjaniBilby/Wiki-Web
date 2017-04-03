@@ -1,0 +1,18 @@
+{
+  "name": "electronapp",
+  "version": "0.0.1",
+  "description": "Test app",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+  	"build-mac": "electron-packager . WikiScimmer --platform=darwin --arch=x64 --ignore=node_modules/electron-* --ignore=data/*",
+  	"build-win": "electron-packager . WikiScimmer --platform=win32 --arch=ia32 --ignore=node_modules/electron-* --ignore=data/*",
+  	"build-linux": "electron-packager . WikiScimmer --platform=linux --arch=ia32 --ignore=node_modules/electron-* --ignore=data/*"
+  },
+  "author": "Ajani James Bilby",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-packager": "^7.0.2",
+    "electron": "^1.1.1"
+  }
+}
