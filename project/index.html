@@ -96,14 +96,11 @@
             break;
           case 187: //+ =
             zoom += zoomScale;
-            if (zoom > -1 && zoom < 0){
-              zoom = 1 + zoomScale;
-            }
             break;
           case 189: //- _
             zoom -= zoomScale;
-            if (zoom < 1 && zoom > 0){
-              zoom = 0 - zoomScale;
+            if (zoom <= 0){
+              zoom = zoomScale;
             }
             break;
         }
@@ -130,6 +127,8 @@
       document.getElementById('menu').onsubmit = function(){
         var start = document.getElementById('start').value.toLowerCase();
         var end = document.getElementById('end').value.toLowerCase();
+
+        document.body.getElementsByTagName('canvas')[0].style.zoom = 1;
 
         Generate(start.replace(' ', '_'), end.replace(' ', '_'));
 

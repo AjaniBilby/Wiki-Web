@@ -269,7 +269,7 @@ function BuildPoints(trace){
         var yPos = i-((col.length-1)/2);
 
         item.x = (colIndex*500) + ((Math.random()*250*2) - 250);
-        item.y = (yPos*100) + ((Math.random()*40*2) - 40);
+        item.y = (yPos*100) + ((Math.random()*35*2) - 35);
         item.color = colors[colorId];
 
         //Update image constraints
@@ -335,7 +335,7 @@ function BuildPoints(trace){
   resizeCanvas(
     largest.x + 250,
     Math.max(
-      largest.y + Math.abs(largest.ny) + 100,
+      largest.y + Math.abs(largest.ny) + 200,
       window.innerHeight-45
     )
   );
