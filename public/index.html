@@ -124,7 +124,9 @@
     </form>
 
     <script>
-      document.getElementById('menu').onsubmit = function(){
+      document.getElementById('menu').onsubmit = function(evt){
+        evt.preventDefault();
+
         var start = document.getElementById('start').value.toLowerCase();
         var end = document.getElementById('end').value.toLowerCase();
 
@@ -133,7 +135,6 @@
         Generate(start.replace(' ', '_'), end.replace(' ', '_'));
 
         new logger.message('<b>Starting...</b>');
-
         return false;
       };
     </script>

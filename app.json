@@ -1,0 +1,8 @@
+{
+  "name": "Wikipedia Skimmer",
+  "description": "Finds the links between two different topics on Wikipedia",
+  "repository": "https://github.com/heroku/node-js-getting-started",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "keywords": ["node", "heroku"],
+  "image": "heroku/nodejs"
+}

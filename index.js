@@ -1,63 +1,118 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const globalShortcut = electron.globalShortcut;
-const ipc = require('electron').ipcMain;
-var fs = require("fs");
+const passer = require('passer');
+const http = require('follow-redirects').http;
+const fs = require('fs');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600, frame: true});
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/project/index.html`);
-
-  mainWindow.setMenu(null);
-  mainWindow.on('closed', function () {
-    mainWindow = null;
-    if (process.platform !== 'darwin') {
-      app.quit();
-    }
-    process.exit();
-  });
+if (!fs.existsSync('./data')){
+	fs.mkdirSync('./data');
 }
 
-app.on('ready', function(){
-  createWindow();
-  globalShortcut.register('CommandOrControl+Shift+R', function() {
-    mainWindow.reload();
-  });
-  globalShortcut.register('CommandOrControl+R', function() {
-    mainWindow.reload();
-  });
-  globalShortcut.register('`', function(){
-    mainWindow.webContents.openDevTools();
-  });
-  globalShortcut.register("F11", function(){
-    mainWindow.setFullScreen(!mainWindow.isFullScreen());
-  });
+
+
+//Setup passer
+passer.listen(process.env.PORT || 5000);
+passer.publicFolder = './public/';
+passer.noSession = true;
+
+passer.get('/wikipedia/*', (req, res)=>{
+	let article = req.url.slice(11);
+
+	// If the result is cached don't download it
+	const filepath = './data/'+article+".dat";
+	if (fs.existsSync(filepath)){
+		console.log('Loading from cache:', article);
+
+		fs.readFile(filepath, (err, data)=>{
+			if (err){
+				res.end('');
+				return;
+			}
+
+			res.end(data);
+		});
+	}else{
+		console.log('Loading from internet:', article);
+
+		http.get('http://en.wikipedia.org/wiki/'+article+'?action=raw', (response) => {
+
+			const { statusCode } = response;
+
+			response.setEncoding('utf8');
+			let data = '';
+			response.on('data', (chunk)=>{ data += chunk; });
+			response.on('end', () => {
+				if (statusCode !== 200){
+					res.statusCode = statusCode;
+					res.end(statusCode.toString());
+					return;
+				}
+
+				references = InterpWikiPage(data, article);
+				references = references.join('\n');
+
+				// Cache result for later
+				fs.writeFile(filepath, references, ()=>{});
+
+				res.end(references);
+			});
+		}).on('error', (e) => {
+			res.end('');
+		});
+	}
 });
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
 
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+
+
+var maxStringLength = 134217727;
+function InterpWikiPage(string, term){
+	//Remove headers, and convert to a standard \n format
+	string = string.replace(/\r\n/g, '\n');
+	string = string.substr(string.indexOf('\n\n')).toLowerCase();
+
+	var broken = null;
+
+	//Remove references
+	while (string.indexOf('<ref') != -1){
+		var start = string.indexOf('<ref');
+		var end = string.indexOf('</ref>');
+
+		if (start == -1 || end == -1){
+			broken = 1;
+			break;
+		}
+		var a = string.slice(0, start);
+		var b = string.slice(end+6);
+		if (a.length+b.length >= maxStringLength){
+			broken = 2;
+			break;
+		}
+
+		string =  a+b ;
+	}
+
+	//Pull all links from the page
+	var links = [];
+	while (string.indexOf('[[') != -1){
+		string = string.slice(string.indexOf('[[')+2);
+		let end = string.indexOf(']]');
+
+		let part = string.slice(0, end).split('|');
+		if (part[0].indexOf(':') != -1 || part.length>2){
+			continue;
+		}
+
+		let link = (part[1] || part[0]).replace(/ /g, '_');
+		if (links.indexOf(link) == -1 && link.indexOf('>') == -1 && link.indexOf('<') == -1){
+			links.push(link.toLowerCase());
+		}
+	}
+
+	if (broken == 1){
+		console.error('Reference tags miss match ('+term+') ' + links.length);
+	}else if (broken == 2){
+		console.error('String Length Fail ('+term+') ' + links.length);
+	}
+
+	return links;
+}

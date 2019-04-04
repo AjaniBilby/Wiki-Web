@@ -1,18 +1,31 @@
 {
-  "name": "WikiSkimmer",
-  "version": "0.0.1",
-  "description": "Test app",
+  "name": "node-js-getting-started",
+  "version": "0.2.6",
+  "description": "A sample Node.js app using Express 4",
+  "engines": {
+    "node": "6.11.1"
+  },
   "main": "index.js",
   "scripts": {
-    "start": "electron .",
-  	"build-mac": "electron-packager . WikiSkimmer --platform=darwin --arch=x64 --ignore=node_modules/electron-* --ignore=data/*",
-  	"build-win": "electron-packager . WikiSkimmer --platform=win32 --arch=ia32 --ignore=node_modules/electron-* --ignore=data/*",
-  	"build-linux": "electron-packager . WikiSkimmer --platform=linux --arch=ia32 --ignore=node_modules/electron-* --ignore=data/*"
+    "start": "node index.js",
+    "test": "node test.js"
   },
-  "author": "Ajani James Bilby",
-  "license": "ISC",
-  "devDependencies": {
-    "electron-packager": "^7.0.2",
-    "electron": "^1.1.1"
-  }
+  "dependencies": {
+    "cosf": "^1.0.6",
+    "custom-radix": "^1.0.4",
+    "follow-redirects": "^1.7.0",
+    "mass-random": "^1.1.7",
+    "passer": "^2.1.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/node-js-getting-started"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT"
 }
