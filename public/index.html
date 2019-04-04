@@ -134,6 +134,8 @@
 				var end = document.getElementById('end').value.toLowerCase().replace(' ', '_');
 				document.body.getElementsByTagName('canvas')[0].style.zoom = 1;
 
+				new logger.message('<b>Starting...</b>');
+
 				let startCheck = 0;
 				let endCheck = 0;
 
@@ -154,7 +156,6 @@
 
 					// Both points are valid so start genereting result
 					Generate(start, end);
-					new logger.message('<b>Starting...</b>');
 				}
 
 				// Check the start and end point are valid
