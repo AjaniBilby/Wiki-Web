@@ -12,12 +12,8 @@ First input is the start page. It will go to the wikipedia page with that title 
 **Zoom Out:** CTRL + -  
 **Save:** CTRL + S  
 
-## Build (Source)
-You will need to install npm
-Then open a command prompt in the director and execute ```npm run start```  
-**Note:** All data your computer loads will be store ```'./data/'``` folder, to allow for faster searches the more a user users it.
-
-You can also build to run as an application for;  
-Windows: ```npm run build-win```  
-Linux: ```npm run build-linux```  
-Mac: ```npm run build-linux```  
+## Setup
+### Locally
+Run ``npm install``, ``npm run start``, then open a browser ``[yourdevice's IP address here]:5000``.
+### Alternative
+This website is also hosted here [https://wiki-skimmer.herokuapp.com/](https://wiki-skimmer.herokuapp.com/);
