@@ -159,11 +159,11 @@
 
 				// Check the start and end point are valid
 				Get(start, (refs)=>{
-					startCheck = (ref == null || refs.length < 1) ? -1 : 1;
+					startCheck = (refs == null || refs.length < 1) ? -1 : 1;
 					AttemptStart();
 				});
 				Get(end, (refs)=>{
-					endCheck = (ref == null || refs.length < 1) ? -1 : 1;
+					endCheck = (refs == null || refs.length < 1) ? -1 : 1;
 					AttemptStart();
 				});
 
