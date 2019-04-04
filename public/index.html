@@ -24,7 +24,7 @@
 
 				font-family: Roboto, Calibre, Liberation Sans, Arial;
 
-				height: 20px;
+				/* height: 20px; */
 				width: 100vw;
 
 				overflow: hidden;
@@ -51,6 +51,7 @@
 		<script src="./display/point.js"></script>
 		<script src="./display/startup.js"></script>
 		<script>
+			var TRACE_STREAMS = 10;
 
 			function Save(){
 				var url = canvas.toDataURL('image/png');
@@ -120,10 +121,15 @@
 	<body>
 
 		<form id="menu">
-			<input id="start" type="text" value="cat" required>
-			to
-			<input id="end" type="text" value="dog" required>
-			<input type="submit" value="Generate">
+			<div>
+				<input id="start" type="text" value="cat" required>
+				to
+				<input id="end" type="text" value="dog" required>
+				<input type="submit" value="Generate">
+			</div>
+			<div style="padding-top: 5px;">
+				<label>Trace Streams: </label><input id="trace_streams" type="number">
+			</div>
 		</form>
 
 		<script>
@@ -170,6 +176,13 @@
 
 				return false;
 			};
+
+			document.getElementById('trace_streams').onchange = function(evt){
+				let num = Number(this.value);
+				if (num > 1 && !isNaN(num)){
+					TRACE_STREAMS = num;
+				}
+			}
 		</script>
 	</body>
 </html>

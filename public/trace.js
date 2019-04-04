@@ -1,6 +1,3 @@
-var traceStreams = 10;
-var cache = true;
-
 //Get wikipedia pages
 var Get = function(term, callback){
 	if (term.indexOf('[') != -1){
@@ -49,14 +46,18 @@ function Trace(start, end, callback){
 					connections[term] = [];
 				}
 				connections[term] = connections[term].concat(links);
-				all = all.concat(links);
 
 				//If the end is in the results, and don't change found it false
 				found = links.indexOf(end) != -1 || found;
 
 				//Push new links for the next set
 				if (found !== true){
-					next = next.concat(links);
+					for (let link of links){
+						if (all.indexOf(link) == -1){
+							next.push(link);
+							all.push(link);
+						}
+					}
 				}
 			}else{
 				new logger.message('<b>Failed</b> '+decodeURIComponent(term));
@@ -87,7 +88,7 @@ function Trace(start, end, callback){
 		}
 
 		if (!found && search.length > 0){
-			var num = Math.min(traceStreams-threads, search.length);
+			var num = Math.min(TRACE_STREAMS-threads, search.length);
 			for (let i=0; i<num; i++){
 				loop();
 			}
