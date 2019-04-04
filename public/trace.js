@@ -83,7 +83,7 @@ function Trace(start, end, callback){
 		};
 
 		if (term !== undefined){
-			new logger.message('<b>Searched</b> '+decodeURIComponent(term));
+			new logger.message('<b color="grey">Searched</b> '+decodeURIComponent(term));
 		}
 
 		if (!found && search.length > 0){
