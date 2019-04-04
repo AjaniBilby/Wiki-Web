@@ -24,9 +24,6 @@ var Get = function(term, callback){
 };
 
 function Trace(start, end, callback){
-	start = start.toLowerCase();
-	end = end.toLowerCase();
-
 	var search = [start];
 	var found = false;
 	var threads = 0;
@@ -70,6 +67,10 @@ function Trace(start, end, callback){
 	};
 	var attemptEnd = function(term){
 		threads -= 1;
+
+		if (ended){
+			return;
+		}
 
 		if (next.length == 0){
 			new logger.message('<b>Failed to reach '+end+'</b>');
