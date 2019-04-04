@@ -58,6 +58,8 @@ function Trace(start, end, callback){
 				if (found !== true){
 					next = next.concat(links);
 				}
+			}else{
+				new logger.message('<b>Failed</b> '+decodeURIComponent(term));
 			}
 
 			attemptEnd(term);
@@ -81,7 +83,7 @@ function Trace(start, end, callback){
 		};
 
 		if (term !== undefined){
-			new logger.message('<b>Searched</b> '+term);
+			new logger.message('<b>Searched</b> '+decodeURIComponent(term));
 		}
 
 		if (!found && search.length > 0){
