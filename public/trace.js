@@ -71,6 +71,13 @@ function Trace(start, end, callback){
 	var attemptEnd = function(term){
 		threads -= 1;
 
+		if (next.length == 0){
+			new logger.message('<b>Failed to reach '+end+'</b>');
+			callback(result);
+			eneded = true;
+			return;
+		}
+
 		if (!found && search.length <= 0){
 			search = next;
 			next = [];

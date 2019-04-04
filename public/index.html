@@ -136,8 +136,8 @@
 			document.getElementById('menu').onsubmit = function(evt){
 				evt.preventDefault();
 
-				var start = document.getElementById('start').value.replace(' ', '_');
-				var end = document.getElementById('end').value.replace(' ', '_');
+				var start = document.getElementById('start').value.replace(/ /g, '_');
+				var end = document.getElementById('end').value.replace(/ /g, '_');
 				document.body.getElementsByTagName('canvas')[0].style.zoom = 1;
 
 				new logger.message('<b>Starting...</b>');
