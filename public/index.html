@@ -1,140 +1,145 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Display</title>
-    <style>
-      body{
-        margin: 0px;
-        margin-bottom:20px;
-        background-color: white;
-      }
+	<head>
+		<meta charset="utf-8">
+		<title>Wiki-Skimmer</title>
 
-      #menu{
-        position: fixed;
-        bottom: 0px;
-        left: 0px;
+		<meta property="og:title" content="Wikipedia Skimmer"/>
+		<meta property="og:description" content="Crawls through Wikipedia to find the degrees of seperation of two different pages"/>
+		<meta property="og:type" content="website"/>
 
-        padding-left: 5px;
+		<style>
+			body{
+				margin: 0px;
+				margin-bottom:20px;
+				background-color: white;
+			}
 
-        font-family: Calibre, Liberation Sans, Arial;
+			#menu{
+				position: fixed;
+				bottom: 0px;
+				left: 0px;
 
-        height: 20px;
-        width: 100vw;
+				padding-left: 5px;
 
-        overflow: hidden;
-        background-color: white;
-      }
-      #menu input{
-        font-family: Calibre, Liberation Sans, Arial;
-      }
-      #menu input[type=text]{
-        width: calc(50% - 70px);
-      }
-      #menu input[type=submit]{
-        width: 75px;
-      }
-      #gen-btn{
-        float:right;
-      }
-    </style>
+				font-family: Calibre, Liberation Sans, Arial;
 
-    <script src="logger.js"></script>
-    <script src="trace.js"></script>
-    <script src="./libraries/p5.js"></script>
-    <script src="./display/vector.js"></script>
-    <script src="./display/point.js"></script>
-    <script src="./display/startup.js"></script>
-    <script>
+				height: 20px;
+				width: 100vw;
 
-      function Save(){
-        var url = canvas.toDataURL('image/png');
+				overflow: hidden;
+				background-color: white;
+			}
+			#menu input{
+				font-family: Calibre, Liberation Sans, Arial;
+			}
+			#menu input[type=text]{
+				width: calc(50% - 70px);
+			}
+			#menu input[type=submit]{
+				width: 75px;
+			}
+			#gen-btn{
+				float:right;
+			}
+		</style>
 
-        var a = document.createElement("a");
-        a.href = url;
-        a.type = 'image/png';
-        a.download = title.replace(/ /g, '_')+'.png';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function(){
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        });
-      }
+		<script src="logger.js"></script>
+		<script src="trace.js"></script>
+		<script src="./libraries/p5.js"></script>
+		<script src="./display/vector.js"></script>
+		<script src="./display/point.js"></script>
+		<script src="./display/startup.js"></script>
+		<script>
 
-      function Generate(start, end){
-        let traceEnd = function(result){
-          if(result && result.all && result.all.length>0){
-            BuildPoints(result);
-          }
-        };
-        let traceTick = function(){};
+			function Save(){
+				var url = canvas.toDataURL('image/png');
 
-        Trace(start, end, traceEnd, traceEnd);
-      }
+				var a = document.createElement("a");
+				a.href = url;
+				a.type = 'image/png';
+				a.download = title.replace(/ /g, '_')+'.png';
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(function(){
+					document.body.removeChild(a);
+					window.URL.revokeObjectURL(url);
+				});
+			}
 
-      var zoom = 1;
-      var zoomScale = 0.1;
-      var ctrlDown = false;
+			function Generate(start, end){
+				let traceEnd = function(result){
+					if(result && result.all && result.all.length>0){
+						BuildPoints(result);
+					}
+				};
+				let traceTick = function(){};
 
-      window.addEventListener('keyup', function(evt){
-        if (evt.keyCode == 17){
-          ctrlDown = false;
-        }
-      });
-      window.addEventListener("keydown", function(evt){
-        switch (evt.keyCode) {
-          case 17: //ctrl
-            ctrlDown = true;
-            break;
-          case 83: //s
-            if (ctrlDown){
-              Save();
-            }
-            break;
-          case 187: //+ =
-            zoom += zoomScale;
-            break;
-          case 189: //- _
-            zoom -= zoomScale;
-            if (zoom <= 0){
-              zoom = zoomScale;
-            }
-            break;
-        }
+				Trace(start, end, traceEnd, traceEnd);
+			}
 
-        var percent = zoom;
-        if (zoom < 0){
-          percent = 1/(Math.abs(zoom)+1);
-        }
+			var zoom = 1;
+			var zoomScale = 0.1;
+			var ctrlDown = false;
 
-        document.body.getElementsByTagName('canvas')[0].style.zoom = percent;
-      });
-    </script>
-  </head>
-  <body>
+			window.addEventListener('keyup', function(evt){
+				if (evt.keyCode == 17){
+					ctrlDown = false;
+				}
+			});
+			window.addEventListener("keydown", function(evt){
+				switch (evt.keyCode) {
+					case 17: //ctrl
+						ctrlDown = true;
+						break;
+					case 83: //s
+						if (ctrlDown){
+							Save();
+						}
+						break;
+					case 187: //+ =
+						zoom += zoomScale;
+						break;
+					case 189: //- _
+						zoom -= zoomScale;
+						if (zoom <= 0){
+							zoom = zoomScale;
+						}
+						break;
+				}
 
-    <form id="menu">
-      <input id="start" type="text" value="cat" required>
-      to
-      <input id="end" type="text" value="dog" required>
-      <input type="submit" value="Generate">
-    </form>
+				var percent = zoom;
+				if (zoom < 0){
+					percent = 1/(Math.abs(zoom)+1);
+				}
 
-    <script>
-      document.getElementById('menu').onsubmit = function(evt){
-        evt.preventDefault();
+				document.body.getElementsByTagName('canvas')[0].style.zoom = percent;
+			});
+		</script>
+	</head>
+	<body>
 
-        var start = document.getElementById('start').value.toLowerCase();
-        var end = document.getElementById('end').value.toLowerCase();
+		<form id="menu">
+			<input id="start" type="text" value="cat" required>
+			to
+			<input id="end" type="text" value="dog" required>
+			<input type="submit" value="Generate">
+		</form>
 
-        document.body.getElementsByTagName('canvas')[0].style.zoom = 1;
+		<script>
+			document.getElementById('menu').onsubmit = function(evt){
+				evt.preventDefault();
 
-        Generate(start.replace(' ', '_'), end.replace(' ', '_'));
+				var start = document.getElementById('start').value.toLowerCase();
+				var end = document.getElementById('end').value.toLowerCase();
 
-        new logger.message('<b>Starting...</b>');
-        return false;
-      };
-    </script>
-  </body>
+				document.body.getElementsByTagName('canvas')[0].style.zoom = 1;
+
+				Generate(start.replace(' ', '_'), end.replace(' ', '_'));
+
+				new logger.message('<b>Starting...</b>');
+				return false;
+			};
+		</script>
+	</body>
 </html>
