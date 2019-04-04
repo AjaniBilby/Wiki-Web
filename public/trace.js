@@ -47,13 +47,11 @@ function Trace(start, end, callback){
 				//If the end is in the results, and don't change found it false
 				found = links.indexOf(end) != -1 || found;
 
-				//Push new links for the next set
-				if (found !== true){
-					for (let link of links){
-						if (all.indexOf(link) == -1){
-							next.push(link);
-							all.push(link);
-						}
+				// Push new elements
+				for (let link of links){
+					if (all.indexOf(link) == -1){
+						next.push(link);
+						all.push(link);
 					}
 				}
 			}else{

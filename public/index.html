@@ -72,9 +72,10 @@
 				let traceEnd = function(result){
 					if(result && result.all && result.all.length>0){
 						BuildPoints(result);
+					}else{
+						console.error("invalid result", result);
 					}
 				};
-				let traceTick = function(){};
 
 				Trace(start, end, traceEnd, traceEnd);
 			}
